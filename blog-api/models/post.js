@@ -25,7 +25,7 @@ const postScheme = new mongoose.Schema(
         },
     },
     {
-        timestamp:true
+        timestamps:true
     }
 );
 
