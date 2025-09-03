@@ -1,13 +1,31 @@
-const { timeStamp } = require("console");
 const mongoose = require("mongoose")
 
 const postScheme = new mongoose.Schema(
     {
         title:{
-            
-        }
-    },{
-        timeStamp:true
+            type: String,
+            required: true,
+            unique:true,
+        },
+        desc:{
+            type:String,
+            required:true
+        },
+        photo: {
+            type: String,
+            required:false,
+        },
+        username: {
+            type: String,
+            required:true
+        },
+        categories:{
+            type: Array,
+            required: false,
+        },
+    },
+    {
+        timestamp:true
     }
 );
 
