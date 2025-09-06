@@ -1,13 +1,20 @@
-const express = require ("express")
+import express from "express";
 const app = express();
-const dotenv = require("dotenv")
-const mongoose =  require ("mongoose")
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import authRoute from "./routes/auth.js";
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("MongoDB connected "))
     .catch((err) => console.error("MongoDB connection error ", err));
 
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+app.use("/api/auth",authRoute);
+
+
 app.listen("5000",()=>{
-    console.log ("Backend is running")
+    console.log ("Backend is at port 5000")
 })
