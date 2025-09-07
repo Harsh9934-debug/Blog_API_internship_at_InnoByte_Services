@@ -4,7 +4,7 @@ import User from "../models/user.js";
 
 // Test route to verify endpoint is working
 router.get("/register", (req, res) => {
-    res.json({ message: "Register endpoint is working! Use POST method to register a user." });
+    res.json({ message: "Register endpoint is working!" });
 });
 
 router.post("/register", async (req, res) => {
