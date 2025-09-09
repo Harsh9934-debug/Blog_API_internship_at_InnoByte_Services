@@ -1,3 +1,4 @@
+// this is the section for the user update and delete 
 import express from "express";
 const router = express.Router();
 import User from "../models/user.js";
