@@ -63,7 +63,7 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Get all posts (optional filters: username, category)
+// Get all posts
 router.get("/", async (req, res) => {
     const username = req.query.user;
     const categoryName = req.query.cat;
