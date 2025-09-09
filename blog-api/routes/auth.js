@@ -38,6 +38,7 @@ router.post("/login", async (req, res) => {
         }
         res.status(200).json(user);
     } catch (err) {
+        res.send("Error occured")
     }
 });
 
