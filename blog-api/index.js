@@ -7,6 +7,7 @@ import userRoute from "./routes/users.js";
 import postRoute from "./routes/post.js";
 import categoriesRoute from "./routes/categories.js";
 
+import multer from "multer";  // this is used for uploading the file 
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL)
@@ -15,6 +16,20 @@ mongoose.connect(process.env.MONGO_URL)
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+
+const storage = multer.diskStorage({
+    destination:(req,file,cb) =>{
+        cb(null,"images");
+
+    },
+    filename: (req,file,cb) =>{
+        cb(null,req.body.name);
+    }
+})
+const upload = multer({storage});
+app.post("/api/upload",upload.single("file"),(req, res)=>{
+    res.status(200).json("File has been uploaded");
+})
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
