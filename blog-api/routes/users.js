@@ -4,6 +4,7 @@ const router = express.Router();
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 
+
 // Get user by ID
 router.get("/:id", async (req, res) => {
     try {
