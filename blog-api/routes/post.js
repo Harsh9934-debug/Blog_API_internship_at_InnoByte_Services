@@ -2,11 +2,15 @@
 import express from "express";
 const router = express.Router();
 import Post from "../models/post.js";
+import { verifyToken } from "../middleware/auth.js";
 
 // Create a post
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
     try {
-        const newPost = new Post(req.body);
+        const newPost = new Post({
+            ...req.body,
+            authorId: req.user.id,
+        });
         const savedPost = await newPost.save();
         res.status(201).json(savedPost);
     } catch (err) {
@@ -15,13 +19,13 @@ router.post("/", async (req, res) => {
 });
 
 // Update a post
-router.put("/:id", async (req, res) => {
+router.put("/:id", verifyToken, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json("Post not found");
 
-        if (post.username !== req.body.username) {
-            return res.status(401).json("You can update only your post!");
+        if (post.authorId !== req.user.id) {
+            return res.status(403).json("Not authorized to update this post");
         }
 
         const updatedPost = await Post.findByIdAndUpdate(
@@ -36,13 +40,13 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete a post
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json("Post not found");
 
-        if (post.username !== req.body.username) {
-            return res.status(401).json("You can delete only your post!");
+        if (post.authorId !== req.user.id) {
+            return res.status(403).json("Not authorized to delete this post");
         }
 
         await post.deleteOne();

@@ -15,9 +15,16 @@ const postScheme = new mongoose.Schema(
             type: String,
             required:false,
         },
+        // ID of the user who authored the post (from JWT)
+        authorId: {
+            type: String,
+            required: true,
+            index: true,
+        },
+        // Optional display name/username; kept for compatibility and filtering
         username: {
             type: String,
-            required:true
+            required:false
         },
         categories:{
             type: Array,

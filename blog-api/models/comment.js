@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
     {
@@ -10,16 +10,15 @@ const commentSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        author_id: {
+        // ID of the user who authored the comment (from JWT)
+        authorId: {
             type: String,
             required: true,
+            index: true,
         },
-        created_at: {
-            type: Date,
-            default: Date.now,
-        },
+        // createdAt/updatedAt handled by timestamps
     },
-    {timestamps: true}
+    { timestamps: true }
 );
 
-module.exports = mongoose.model("comment",commentSchema);
+export default mongoose.model("comment", commentSchema);
