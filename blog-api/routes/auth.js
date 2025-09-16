@@ -3,8 +3,9 @@ const router = express.Router();
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { validateRegister, validateLogin } from "../middleware/validation.js";
 
-router.post("/register", async (req, res) => {
+router.post("/register", validateRegister, async (req, res) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -22,7 +23,7 @@ router.post("/register", async (req, res) => {
 });
 
 // this is for the login route
-router.post("/login", async (req, res) => {
+router.post("/login", validateLogin, async (req, res) => {
     try {
         const user = await User.findOne({ username: req.body.username });
         if (!user) {

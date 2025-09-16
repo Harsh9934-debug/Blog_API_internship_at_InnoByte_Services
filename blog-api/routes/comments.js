@@ -2,9 +2,10 @@ import express from "express";
 const router = express.Router();
 import Comment from "../models/comment.js";
 import { verifyToken } from "../middleware/auth.js";
+import { validateCreateComment, validateUpdateComment } from "../middleware/validation.js";
 
 // Create comment
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", verifyToken, validateCreateComment, async (req, res) => {
     try {
         const newComment = new Comment({
             ...req.body,
@@ -18,7 +19,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 // Update comment
-router.put("/:id", verifyToken, async (req, res) => {
+router.put("/:id", verifyToken, validateUpdateComment, async (req, res) => {
     try {
         const comment = await Comment.findById(req.params.id);
         if (!comment) return res.status(404).json("Comment not found");

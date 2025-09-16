@@ -3,9 +3,10 @@ import express from "express";
 const router = express.Router();
 import Post from "../models/post.js";
 import { verifyToken } from "../middleware/auth.js";
+import { validateCreatePost, validateUpdatePost } from "../middleware/validation.js";
 
 // Create a post
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", verifyToken, validateCreatePost, async (req, res) => {
     try {
         const newPost = new Post({
             ...req.body,
@@ -19,7 +20,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 // Update a post
-router.put("/:id", verifyToken, async (req, res) => {
+router.put("/:id", verifyToken, validateUpdatePost, async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (!post) return res.status(404).json("Post not found");

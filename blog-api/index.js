@@ -18,6 +18,14 @@ mongoose.connect(process.env.MONGO_URL)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
+// Global error handler
+app.use((err, req, res, next) => {
+    if (res.headersSent) return next(err);
+    const status = err.status || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(status).json({ message });
+});
+
 const storage = multer.diskStorage({
     destination:(req,file,cb) =>{
         cb(null,"images");
@@ -37,6 +45,10 @@ app.use("/api/user", userRoute);
 app.use("/api/post", postRoute);
 app.use("/api/categories", categoriesRoute);
 app.use("/api/comments", commentsRoute);
+
+// Aliases to match brief contract
+app.use("/posts", postRoute);
+app.use("/comments", commentsRoute);
 
 
 
