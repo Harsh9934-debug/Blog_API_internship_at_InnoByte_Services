@@ -2,81 +2,70 @@
 
 A clean, JWT-secured REST API for managing users, posts, comments, and categories built with Node.js, Express, and MongoDB (Mongoose).
 
-## Table of Contents
-- Introduction
-- Tech Stack
-- Getting Started
-- Environment Variables
-- NPM Scripts
-- Project Structure
-- API Overview
-- Authentication Workflow
-- File Uploads
-- Documentation
-- Testing (Next Steps)
-- License
-
-## Introduction
-This service exposes endpoints to register/login users, create and manage blog posts and comments with proper authorization, and manage categories. Write actions (POST/PUT/DELETE) on posts and comments are protected by JWT and enforce ownership using the user ID from the token.
+## Overview
+- Authentication with JWT (register/login)
+- Authorization on write routes (POST/PUT/DELETE) using `authorId` from JWT
+- CRUD for Posts, Comments, Categories, Users
+- File uploads via Multer, served from `/images`
 
 ## Tech Stack
-- Runtime: Node.js (ES Modules)
-- Framework: Express
-- Database: MongoDB + Mongoose
-- Auth: JSON Web Tokens (JWT)
-- Uploads: Multer (disk storage)
+- Node.js (ES Modules), Express
+- MongoDB, Mongoose
+- JWT for authentication
+- Multer for uploads
 
-## Getting Started
-1) Clone and install
+## Requirements
+- Node.js 18+
+- MongoDB (local or Atlas)
+
+## Setup
+1) Install dependencies
 ```bash
-git clone <repo-url>
-cd blog-api
 npm install
 ```
-
-2) Configure environment (see below) and ensure MongoDB is reachable (local or Atlas).
+2) Create `.env` in `blog-api/`
+```
+MONGO_URL=mongodb://localhost:27017/blog_api
+JWT_SECRET=change-this-to-a-strong-random-string
+```
+For Atlas, use `mongodb+srv://...` and whitelist your IP.
 
 3) Start the server
 ```bash
 npm start
 ```
-Server runs on http://localhost:5000
+App: `http://localhost:5000`
 
-## Environment Variables
-Create a `.env` file in `blog-api/`:
-```
-MONGO_URL=mongodb://localhost:27017/blog_api
-JWT_SECRET=change-this-to-a-strong-random-string
-```
-For MongoDB Atlas, use your `mongodb+srv://...` connection string and whitelist your IP.
-
-## NPM Scripts
-- `npm start` – run the API with nodemon
+## Scripts
+- `npm start` – run with nodemon
 
 ## Project Structure
 ```
 blog-api/
-  index.js                # App entrypoint
+  index.js
   middleware/
-    auth.js               # JWT verification helpers
+    auth.js
+    validation.js
   models/
-    user.js               # User model
-    post.js               # Post model (authorId)
-    comment.js            # Comment model (authorId)
-    category.js           # Category model
+    user.js
+    post.js
+    comment.js
+    category.js
   routes/
-    auth.js               # Register/Login
-    users.js              # Get/Update/Delete user (protected)
-    post.js               # Posts CRUD (protected writes)
-    comments.js           # Comments CRUD (protected writes)
-    categories.js         # Categories create/list/get
+    auth.js
+    users.js
+    post.js
+    comments.js
+    categories.js
   docs/
-    README_API.md         # Human-friendly API guide
-    openapi.yaml          # OpenAPI 3.1 spec
+    README_API.md
+    openapi.yaml
+  tests/
+    test.txt
   package.json
 ```
 
-## API Overview
+## API (summary)
 Base URL: `http://localhost:5000`
 
 Auth header for protected endpoints:
@@ -85,25 +74,25 @@ Authorization: Bearer <token>
 ```
 
 - Auth
-  - POST `/api/auth/register` – create user
-  - POST `/api/auth/login` – returns `{ user, token }`
+  - POST `/api/auth/register`
+  - POST `/api/auth/login` → `{ user, token }`
 
 - Users (protected)
   - GET `/api/user/:id`
-  - PUT `/api/user/:id` (owner only)
-  - DELETE `/api/user/:id` (owner only)
+  - PUT `/api/user/:id`
+  - DELETE `/api/user/:id`
 
-- Posts
-  - GET `/api/post` – optional `?user=<username>` or `?cat=<category>`
+- Posts (aliases provided to match brief)
+  - GET `/api/post` (alias `/posts`)
   - GET `/api/post/:id`
-  - POST `/api/post` (protected) – `authorId` taken from JWT
-  - PUT `/api/post/:id` (protected, owner only via `authorId`)
+  - POST `/api/post` (protected)
+  - PUT `/api/post/:id` (protected, owner only)
   - DELETE `/api/post/:id` (protected, owner only)
 
-- Comments
-  - GET `/api/comments/:id`
-  - GET `/api/comments/post/:postId`
-  - POST `/api/comments` (protected) – `authorId` from JWT
+- Comments (aliases provided to match brief)
+  - GET `/api/comments/:id` (alias `/comments/:id`)
+  - GET `/api/comments/post/:postId` (alias `/comments?post_id=<postId>` via client mapping)
+  - POST `/api/comments` (protected)
   - PUT `/api/comments/:id` (protected, owner only)
   - DELETE `/api/comments/:id` (protected, owner only)
 
@@ -112,23 +101,19 @@ Authorization: Bearer <token>
   - GET `/api/categories/:id`
   - POST `/api/categories`
 
-## Authentication Workflow
-1) Register a user via `/api/auth/register`.
-2) Login via `/api/auth/login` and copy the `token`.
-3) Call protected endpoints with `Authorization: Bearer <token>`.
-4) Ownership checks compare `req.user.id` (from JWT) to the resource `authorId`.
+See detailed docs:
+- `docs/README_API.md` (guide)
+- `docs/openapi.yaml` (OpenAPI – import into Swagger/Postman)
+
+## Auth Flow
+1) Register via `/api/auth/register`
+2) Login via `/api/auth/login` and copy `token`
+3) Use `Authorization: Bearer <token>` on protected routes
 
 ## File Uploads
-- Endpoint: `POST /api/upload`
-- Form-data: `file` (type: file)
-- Files are saved in `/images` and served at `GET /images/<filename>`.
+Endpoint: `POST /api/upload` (form-data `file`). Files are saved under `/images` and served at `GET /images/<filename>`.
 
-## Documentation
-- Human-readable guide: `docs/README_API.md`
-- OpenAPI spec: `docs/openapi.yaml` (import into Swagger/Postman)
-
-## Testing (Next Steps)
-- Unit/Integration tests with Jest + Supertest
-  - Examples: auth login, protected route access, post create/update/delete with ownership enforcement
-- Consider adding CI and coverage reporting
+## Notes
+- Input validation via `express-validator` (see `middleware/validation.js`)
+- Centralized error handler normalizes error responses
 
