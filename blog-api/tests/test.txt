@@ -1,0 +1,105 @@
+Test Plan for Blog API
+
+Prerequisites
+- Server running at http://localhost:5000
+- Database reachable via MONGO_URL
+- Valid JWT_SECRET configured
+
+Auth
+1) Register - success
+   - POST /api/auth/register with valid username, email, password → 200 user json
+2) Register - duplicate username/email
+   - Same payload again → 4xx error
+3) Login - success
+   - POST /api/auth/login with correct creds → 200 { user, token }
+4) Login - wrong password
+   - → 400 "Wrong password"
+5) Login - nonexistent user
+   - → 400 "User not found"
+
+Users (Protected)
+6) Get user by id - with token
+   - GET /api/user/:id with Bearer token of that user → 200 user (no password)
+7) Get user by id - without token
+   - → 401
+8) Update own profile - success
+   - PUT /api/user/:id with own token, change email → 200 updated user
+9) Update own password - success
+   - PUT /api/user/:id with password field → stored password should be hashed
+10) Update another user - forbidden
+    - Use different user token → 403/401
+11) Delete own account - success
+    - DELETE /api/user/:id with own token → 200
+12) Delete another user - forbidden
+    - → 403/401
+
+Posts
+13) Create post - unauthorized
+    - POST /api/post without token → 401
+14) Create post - success
+    - POST /api/post with token, title+desc → 201 post with authorId == token.user.id
+15) Get post by id - public
+    - GET /api/post/:id → 200 post
+16) List posts - public
+    - GET /api/post → 200 array
+17) List posts - filter by username
+    - GET /api/post?user=<username> → 200 only matching
+18) List posts - filter by category
+    - GET /api/post?cat=<category> → 200 only matching
+19) Update post - owner success
+    - PUT /api/post/:id with owner token → 200 updated
+20) Update post - non-owner forbidden
+    - PUT with other token → 403
+21) Delete post - owner success
+    - DELETE /api/post/:id with owner token → 200
+22) Delete post - non-owner forbidden
+    - → 403
+
+Comments
+23) Create comment - unauthorized
+    - POST /api/comments without token → 401
+24) Create comment - success
+    - POST /api/comments with token, { postId, content } → 201 with authorId
+25) Get comment by id - public
+    - GET /api/comments/:id → 200
+26) List comments by post - public
+    - GET /api/comments/post/:postId → 200 array
+27) Update comment - owner success
+    - PUT /api/comments/:id with author token → 200
+28) Update comment - non-owner forbidden
+    - → 403
+29) Delete comment - owner success
+    - DELETE /api/comments/:id with author token → 200
+30) Delete comment - non-owner forbidden
+    - → 403
+
+Categories
+31) Create category - success
+    - POST /api/categories { name } → 200 category
+32) Create category - duplicate name
+    - → 4xx
+33) Get categories - public
+    - GET /api/categories → 200 array
+34) Get category by id - public
+    - GET /api/categories/:id → 200
+
+Uploads
+35) Upload file - success
+    - POST /api/upload with form-data field 'file' → 200
+36) Access uploaded file
+    - GET /images/<returned-filename> → 200 file bytes
+
+Validation & Errors
+37) Register - invalid email format → 4xx
+38) Post create - missing required fields → 4xx
+39) Comment create - missing postId or content → 4xx
+40) JWT - missing Authorization header on protected routes → 401
+41) JWT - malformed/expired token → 401 "Invalid or expired token"
+
+Security/Ownership
+42) Ensure post.authorId set from JWT and never overridden by body
+43) Ensure comment.authorId set from JWT and never overridden by body
+
+Performance/Other
+44) Large list retrieval (posts) returns within acceptable time
+45) Unknown route returns 404
