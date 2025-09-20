@@ -2,7 +2,7 @@
 import express from "express";
 const router = express.Router();
 import User from "../models/user.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { verifyToken, verifyTokenAndAuthorization } from "../middleware/auth.js";
 
 // Get user by ID
