@@ -1,0 +1,11 @@
+{
+    "title":"My Second Blog Post",
+    "desc":"This is another test blog post",
+    "authorId":"68cfb53179c63773ebba7239",
+    "categories":["Technology","Programming"],
+    "_id":"68cfb7a179c63773ebba7249",
+    "createdAt":"2025-09-21T08:30:25.216Z",
+    "updatedAt":"2025-09-21T08:30:25.216Z",
+    "__v":0
+}
+Status: 201

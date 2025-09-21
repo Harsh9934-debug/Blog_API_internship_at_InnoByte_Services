@@ -1,0 +1,8 @@
+{
+    "name":"Technology"
+    ,"_id":"68cfb53979c63773ebba723d",
+    "createdAt":"2025-09-21T08:20:09.607Z",
+    "updatedAt":"2025-09-21T08:20:09.607Z",
+    "__v":0
+}
+Status: 200

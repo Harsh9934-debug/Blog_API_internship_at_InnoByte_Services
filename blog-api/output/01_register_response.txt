@@ -1,0 +1,11 @@
+{
+    "username":"testuser5",
+    "email":"test5@example.com",
+    "password":"$2b$10$cmRW6HhLk1D3kxBuUKlFJuVa6gX1l.VK/AR69oOVg6qs5J7ypVHmG",
+    "profilepic":"",
+    "_id":"68cfb53179c63773ebba7239",
+    "createdAt":"2025-09-21T08:20:01.736Z",
+    "updatedAt":"2025-09-21T08:20:01.736Z",
+    "__v":0
+}
+Status: 200

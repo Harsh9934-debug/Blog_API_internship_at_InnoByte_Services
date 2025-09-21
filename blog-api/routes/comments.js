@@ -52,6 +52,16 @@ router.delete("/:id", verifyToken, async (req, res) => {
     }
 });
 
+// Get all comments (public)
+router.get("/", async (req, res) => {
+    try {
+        const comments = await Comment.find();
+        res.status(200).json(comments);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
+
 // Get comments by postId (public)
 router.get("/post/:postId", async (req, res) => {
     try {
@@ -62,7 +72,7 @@ router.get("/post/:postId", async (req, res) => {
     }
 });
 
-// Get single comment (public)
+// Get single comment (public) - MUST be after other specific routes
 router.get("/:id", async (req, res) => {
     try {
         const comment = await Comment.findById(req.params.id);

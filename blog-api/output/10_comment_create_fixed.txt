@@ -1,0 +1,10 @@
+{
+    "postId":"68cfb53179c63773ebba7239",
+    "content":"This is a test comment for the post",
+    "authorId":"68cfb53179c63773ebba7239",
+    "_id":"68cfb7a879c63773ebba724b",
+    "createdAt":"2025-09-21T08:30:32.229Z",
+    "updatedAt":"2025-09-21T08:30:32.229Z",
+    "__v":0
+}
+Status: 201
